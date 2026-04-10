@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensor Anomaly Explainer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Gas Leak Emergency Banner -->
+  <div id="gas-emergency-banner" class="emergency-banner hidden">
+    <div class="emergency-content">
+      <span class="emergency-icon">&#9888;</span>
+      <span class="emergency-text">CRITICAL GAS LEAK DETECTED &mdash; INITIATE EMERGENCY PROTOCOL</span>
+      <span class="emergency-icon">&#9888;</span>
+    </div>
+    <button class="emergency-dismiss" onclick="dismissEmergency()">&times;</button>
+  </div>
+
+  <div class="dashboard">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <h1 class="title">Sensor Anomaly Explainer</h1>
+        <p class="subtitle">Marine &amp; Oil IoT Monitoring &mdash; AI-Powered Diagnostics</p>
+      </div>
+      <div class="header-right">
+        <div id="system-status" class="status-indicator">
+          <span class="status-dot status-unknown"></span>
+          <span class="status-label">Connecting...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sensor Status Grid -->
+    <section class="section">
+      <h2 class="section-title">Sensor Array Status</h2>
+      <div id="sensor-grid" class="sensor-grid">
+        <div class="sensor-card" data-sensor="vibration">
+          <div class="sensor-icon">&#9201;</div>
+          <div class="sensor-name">Vibration</div>
+          <span class="sensor-badge badge-idle">Idle</span>
+        </div>
+        <div class="sensor-card" data-sensor="temperature">
+          <div class="sensor-icon">&#127777;</div>
+          <div class="sensor-name">Temperature</div>
+          <span class="sensor-badge badge-idle">Idle</span>
+        </div>
+        <div class="sensor-card" data-sensor="pressure">
+          <div class="sensor-icon">&#9878;</div>
+          <div class="sensor-name">Pressure</div>
+          <span class="sensor-badge badge-idle">Idle</span>
+        </div>
+        <div class="sensor-card" data-sensor="flow_rate">
+          <div class="sensor-icon">&#128167;</div>
+          <div class="sensor-name">Flow Rate</div>
+          <span class="sensor-badge badge-idle">Idle</span>
+        </div>
+        <div class="sensor-card" data-sensor="gas_level">
+          <div class="sensor-icon">&#9729;</div>
+          <div class="sensor-name">Gas Level</div>
+          <span class="sensor-badge badge-idle">Idle</span>
+        </div>
+        <div class="sensor-card" data-sensor="acoustic">
+          <div class="sensor-icon">&#128266;</div>
+          <div class="sensor-name">Acoustic</div>
+          <span class="sensor-badge badge-idle">Idle</span>
+        </div>
+        <div class="sensor-card" data-sensor="corrosion">
+          <div class="sensor-icon">&#128737;</div>
+          <div class="sensor-name">Corrosion</div>
+          <span class="sensor-badge badge-idle">Idle</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Telemetry Input -->
+    <section class="section">
+      <h2 class="section-title">Telemetry Input</h2>
+      <div class="sample-buttons" id="sample-buttons">
+        <button class="sample-btn" data-index="0">Vibration</button>
+        <button class="sample-btn" data-index="1">Temperature</button>
+        <button class="sample-btn" data-index="2">Pressure</button>
+        <button class="sample-btn" data-index="3">Flow Rate</button>
+        <button class="sample-btn" data-index="4">Gas Level</button>
+        <button class="sample-btn" data-index="5">Acoustic</button>
+        <button class="sample-btn" data-index="6">Corrosion</button>
+      </div>
+      <div class="input-area">
+        <textarea id="telemetry-input" placeholder='Paste sensor telemetry JSON here or select a sample scenario above...' spellcheck="false"></textarea>
+        <div class="input-actions">
+          <span id="json-validation" class="json-validation"></span>
+          <button id="analyze-btn" class="btn btn-primary">
+            <span class="btn-icon">&#9654;</span> Analyze
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Explanation Output -->
+    <section class="section" id="output-section" style="display:none;">
+      <h2 class="section-title">AI Analysis</h2>
+
+      <!-- Anomaly Summary Bar -->
+      <div id="anomaly-summary" class="anomaly-summary hidden">
+        <div class="anomaly-severity" id="anomaly-severity">--</div>
+        <div class="anomaly-details">
+          <span id="anomaly-direction"></span>
+          <span id="anomaly-deviation"></span>
+        </div>
+        <div class="anomaly-headline" id="anomaly-headline"></div>
+      </div>
+
+      <!-- Explanation Panel -->
+      <div class="explanation-panel" id="explanation-panel">
+        <div id="thinking-indicator" class="thinking hidden">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="thinking-text">Analyzing telemetry data...</span>
+        </div>
+        <div id="explanation-content" class="explanation-content"></div>
+      </div>
+
+      <!-- Follow-up Suggestions -->
+      <div id="followup-area" class="followup-area hidden">
+        <h3 class="followup-title">Suggested Follow-ups</h3>
+        <div id="followup-buttons" class="followup-buttons"></div>
+      </div>
+
+      <!-- Output Actions -->
+      <div class="output-actions">
+        <button id="copy-btn" class="btn btn-secondary" onclick="copyExplanation()">
+          &#128203; Copy Explanation
+        </button>
+        <button id="download-btn" class="btn btn-secondary" onclick="downloadReport()">
+          &#128229; Download Report
+        </button>
+      </div>
+    </section>
+
+    <!-- Error Display -->
+    <div id="error-display" class="error-display hidden"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
