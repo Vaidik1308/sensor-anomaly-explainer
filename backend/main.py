@@ -25,6 +25,7 @@ from rag_engine import load_vector_store
 env_path = Path(__file__).resolve().parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
+GENAI_API_KEY = os.getenv("GENAI_API_KEY")
 
 # ── Application lifespan: load resources on startup ─────────────────────────
 @asynccontextmanager

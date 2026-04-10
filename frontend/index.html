@@ -7,11 +7,11 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Gas Leak Emergency Banner -->
-  <div id="gas-emergency-banner" class="emergency-banner hidden">
+  <!-- Emergency Banner (Gas Leak / Smoke Fire) -->
+  <div id="emergency-banner" class="emergency-banner hidden">
     <div class="emergency-content">
       <span class="emergency-icon">&#9888;</span>
-      <span class="emergency-text">CRITICAL GAS LEAK DETECTED &mdash; INITIATE EMERGENCY PROTOCOL</span>
+      <span class="emergency-text" id="emergency-text">CRITICAL ALERT DETECTED &mdash; INITIATE EMERGENCY PROTOCOL</span>
       <span class="emergency-icon">&#9888;</span>
     </div>
     <button class="emergency-dismiss" onclick="dismissEmergency()">&times;</button>
@@ -22,7 +22,7 @@
     <header class="header">
       <div class="header-left">
         <h1 class="title">Sensor Anomaly Explainer</h1>
-        <p class="subtitle">Marine &amp; Oil IoT Monitoring &mdash; AI-Powered Diagnostics</p>
+        <p class="subtitle">Industrial IoT Monitoring &mdash; AI-Powered Diagnostics</p>
       </div>
       <div class="header-right">
         <div id="system-status" class="status-indicator">
@@ -32,43 +32,56 @@
       </div>
     </header>
 
-    <!-- Sensor Status Grid -->
+    <!-- Sensor Status Grid — 8 sensors -->
     <section class="section">
       <h2 class="section-title">Sensor Array Status</h2>
       <div id="sensor-grid" class="sensor-grid">
-        <div class="sensor-card" data-sensor="vibration">
-          <div class="sensor-icon">&#9201;</div>
-          <div class="sensor-name">Vibration</div>
-          <span class="sensor-badge badge-idle">Idle</span>
-        </div>
-        <div class="sensor-card" data-sensor="temperature">
+        <div class="sensor-card" data-sensor="TEMP">
           <div class="sensor-icon">&#127777;</div>
           <div class="sensor-name">Temperature</div>
+          <div class="sensor-unit">&deg;C</div>
           <span class="sensor-badge badge-idle">Idle</span>
         </div>
-        <div class="sensor-card" data-sensor="pressure">
+        <div class="sensor-card" data-sensor="PRESSURE">
           <div class="sensor-icon">&#9878;</div>
           <div class="sensor-name">Pressure</div>
+          <div class="sensor-unit">PSI</div>
           <span class="sensor-badge badge-idle">Idle</span>
         </div>
-        <div class="sensor-card" data-sensor="flow_rate">
+        <div class="sensor-card" data-sensor="HUMIDITY">
           <div class="sensor-icon">&#128167;</div>
+          <div class="sensor-name">Humidity</div>
+          <div class="sensor-unit">%RH</div>
+          <span class="sensor-badge badge-idle">Idle</span>
+        </div>
+        <div class="sensor-card" data-sensor="VIBRATION">
+          <div class="sensor-icon">&#9201;</div>
+          <div class="sensor-name">Vibration</div>
+          <div class="sensor-unit">mm/s</div>
+          <span class="sensor-badge badge-idle">Idle</span>
+        </div>
+        <div class="sensor-card" data-sensor="CURRENT">
+          <div class="sensor-icon">&#9889;</div>
+          <div class="sensor-name">Current</div>
+          <div class="sensor-unit">Amps</div>
+          <span class="sensor-badge badge-idle">Idle</span>
+        </div>
+        <div class="sensor-card" data-sensor="FLOW">
+          <div class="sensor-icon">&#127754;</div>
           <div class="sensor-name">Flow Rate</div>
+          <div class="sensor-unit">L/min</div>
           <span class="sensor-badge badge-idle">Idle</span>
         </div>
-        <div class="sensor-card" data-sensor="gas_level">
+        <div class="sensor-card" data-sensor="GAS">
           <div class="sensor-icon">&#9729;</div>
-          <div class="sensor-name">Gas Level</div>
+          <div class="sensor-name">Gas Leak</div>
+          <div class="sensor-unit">PPM</div>
           <span class="sensor-badge badge-idle">Idle</span>
         </div>
-        <div class="sensor-card" data-sensor="acoustic">
-          <div class="sensor-icon">&#128266;</div>
-          <div class="sensor-name">Acoustic</div>
-          <span class="sensor-badge badge-idle">Idle</span>
-        </div>
-        <div class="sensor-card" data-sensor="corrosion">
-          <div class="sensor-icon">&#128737;</div>
-          <div class="sensor-name">Corrosion</div>
+        <div class="sensor-card" data-sensor="SMOKE">
+          <div class="sensor-icon">&#128293;</div>
+          <div class="sensor-name">Smoke / Fire</div>
+          <div class="sensor-unit">PPM</div>
           <span class="sensor-badge badge-idle">Idle</span>
         </div>
       </div>
@@ -78,13 +91,14 @@
     <section class="section">
       <h2 class="section-title">Telemetry Input</h2>
       <div class="sample-buttons" id="sample-buttons">
-        <button class="sample-btn" data-index="0">Vibration</button>
-        <button class="sample-btn" data-index="1">Temperature</button>
-        <button class="sample-btn" data-index="2">Pressure</button>
-        <button class="sample-btn" data-index="3">Flow Rate</button>
-        <button class="sample-btn" data-index="4">Gas Level</button>
-        <button class="sample-btn" data-index="5">Acoustic</button>
-        <button class="sample-btn" data-index="6">Corrosion</button>
+        <button class="sample-btn" data-index="0">Temperature</button>
+        <button class="sample-btn" data-index="1">Pressure</button>
+        <button class="sample-btn" data-index="2">Humidity</button>
+        <button class="sample-btn" data-index="3">Vibration</button>
+        <button class="sample-btn" data-index="4">Current</button>
+        <button class="sample-btn" data-index="5">Flow Rate</button>
+        <button class="sample-btn" data-index="6">Gas Leak</button>
+        <button class="sample-btn" data-index="7">Smoke / Fire</button>
       </div>
       <div class="input-area">
         <textarea id="telemetry-input" placeholder='Paste sensor telemetry JSON here or select a sample scenario above...' spellcheck="false"></textarea>

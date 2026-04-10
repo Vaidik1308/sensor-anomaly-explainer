@@ -32,7 +32,8 @@ const thinkingIndicator = document.getElementById('thinking-indicator');
 const explanationContent = document.getElementById('explanation-content');
 const followupArea = document.getElementById('followup-area');
 const followupButtons = document.getElementById('followup-buttons');
-const emergencyBanner = document.getElementById('gas-emergency-banner');
+const emergencyBanner = document.getElementById('emergency-banner');
+const emergencyText = document.getElementById('emergency-text');
 const errorDisplay = document.getElementById('error-display');
 
 // === Initialization ===
@@ -132,6 +133,7 @@ async function submitAnalysis(telemetry, query, history) {
 
   // Reset UI
   hideError();
+  dismissEmergency();
   outputSection.style.display = '';
   outputSection.classList.add('fade-in');
   anomalySummary.classList.add('hidden');
@@ -191,7 +193,6 @@ async function readSSEStream(response) {
 
     buffer += decoder.decode(value, { stream: true });
     const lines = buffer.split('\n');
-    // Keep the last potentially incomplete line in the buffer
     buffer = lines.pop() || '';
 
     for (const line of lines) {
@@ -243,7 +244,7 @@ function handleMetadata(event) {
   if (anomaly) {
     updateAnomalySummary(anomaly);
     updateSensorCard(lastTelemetry, anomaly);
-    checkGasEmergency(lastTelemetry, anomaly);
+    checkEmergency(lastTelemetry, anomaly);
   }
 
   if (event.follow_ups && event.follow_ups.length > 0) {
@@ -264,7 +265,6 @@ function handleToken(event) {
 }
 
 function handleDone() {
-  // Store session history for follow-ups
   sessionHistory = lastExplanation;
 }
 
@@ -281,8 +281,7 @@ function updateAnomalySummary(anomaly) {
   else if (sev === 'critical') anomalySeverity.classList.add('sev-critical');
 
   const dir = anomaly.direction || '';
-  anomalyDirection.textContent = dir ? (dir === 'above' ? '&#9650; Above Normal' : '&#9660; Below Normal') : '';
-  anomalyDirection.innerHTML = anomalyDirection.textContent;
+  anomalyDirection.innerHTML = dir ? (dir === 'above' ? '&#9650; Above Normal' : '&#9660; Below Normal') : '';
 
   const dev = anomaly.deviation_value;
   const pct = anomaly.deviation_percent;
@@ -299,14 +298,13 @@ function updateAnomalySummary(anomaly) {
 function updateSensorCard(telemetry, anomaly) {
   if (!telemetry) return;
 
-  const sensorType = telemetry.sensor_type || '';
+  const sensorType = (telemetry.sensor_type || '').toUpperCase();
   const cards = document.querySelectorAll('.sensor-card');
 
   cards.forEach(card => {
     const cardType = card.dataset.sensor;
     if (cardType !== sensorType) return;
 
-    // Remove previous states
     card.classList.remove('active', 'severity-low', 'severity-medium', 'severity-high', 'severity-critical');
     card.classList.add('active');
 
@@ -318,9 +316,15 @@ function updateSensorCard(telemetry, anomaly) {
       if (sev === 'critical') {
         badge.className = 'sensor-badge badge-critical';
         badge.textContent = 'CRITICAL';
+      } else if (sev === 'high') {
+        badge.className = 'sensor-badge badge-high';
+        badge.textContent = 'HIGH';
+      } else if (sev === 'medium') {
+        badge.className = 'sensor-badge badge-medium';
+        badge.textContent = 'MEDIUM';
       } else {
         badge.className = 'sensor-badge badge-anomaly';
-        badge.textContent = 'Anomaly';
+        badge.textContent = 'LOW';
       }
     } else {
       badge.className = 'sensor-badge badge-normal';
@@ -329,13 +333,18 @@ function updateSensorCard(telemetry, anomaly) {
   });
 }
 
-// === Gas Emergency ===
-function checkGasEmergency(telemetry, anomaly) {
+// === Emergency Alert (GAS or SMOKE) ===
+function checkEmergency(telemetry, anomaly) {
   if (!telemetry || !anomaly) return;
-  const isGas = (telemetry.sensor_type || '').toLowerCase() === 'gas_level';
+  const type = (telemetry.sensor_type || '').toUpperCase();
   const isCritical = (anomaly.severity || '').toLowerCase() === 'critical';
 
-  if (isGas && isCritical && anomaly.is_anomaly) {
+  if ((type === 'GAS' || type === 'SMOKE') && isCritical && anomaly.is_anomaly) {
+    if (type === 'GAS') {
+      emergencyText.textContent = 'CRITICAL GAS LEAK DETECTED \u2014 EVACUATE IMMEDIATELY';
+    } else {
+      emergencyText.textContent = 'CRITICAL SMOKE / FIRE DETECTED \u2014 TRIGGER FIRE ALARM';
+    }
     emergencyBanner.classList.remove('hidden');
     document.body.style.paddingTop = '60px';
   }
@@ -345,7 +354,6 @@ function dismissEmergency() {
   emergencyBanner.classList.add('hidden');
   document.body.style.paddingTop = '0';
 }
-// Expose globally for onclick
 window.dismissEmergency = dismissEmergency;
 
 // === Follow-ups ===
